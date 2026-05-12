@@ -1,4 +1,5 @@
 # Zastosowanie metod uczenia maszynowego - Projekt Zaliczeniowy
+*Przeczytaj w innym języku: [🇬🇧 English](README.md)*
 
 ## 📌 Opis Projektu
 Projekt realizowany w ramach przedmiotu **Zastosowanie metod uczenia maszynowego**. Głównym celem jest przeprowadzenie kompletnego procesu analizy danych (end-to-end machine learning pipeline) na zbiorze "Data Professional Salary Survey". 
