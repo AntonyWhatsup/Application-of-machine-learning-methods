@@ -1,0 +1,3 @@
+Cluster_KMeans,size,median_salary,median_job_years,median_database_years,dominant_country,dominant_job,dominant_employment,share_pct
+0,6463,79000.0,7.0,10.0,United States,"DBA (Production Focus - build & troubleshoot servers, HA/DR)",Full time employee,43.466272109758556
+1,8406,105000.0,6.0,12.0,United States,DBA (General - splits time evenly between writing & tuning queries AND building & troubleshooting servers),Full time employee,56.533727890241444

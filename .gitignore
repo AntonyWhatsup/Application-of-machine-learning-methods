@@ -16,3 +16,6 @@ env/
 data/processed/*.csv
 
 data/raw/*.xlsx
+
+.jupyter-local/
+models/*.joblib
