@@ -131,21 +131,33 @@ finish_plot(
 '''),
     md('''## Rozkłady wszystkich zmiennych liczbowych'''),
     code(r'''
-numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
+numeric_cols = [c for c in df.select_dtypes(include=np.number).columns if c != "Counter"]
 ncols = 3
 nrows = int(np.ceil(len(numeric_cols) / ncols))
 fig, axes = plt.subplots(nrows, ncols, figsize=(15, 4 * nrows))
 for ax, column in zip(np.ravel(axes), numeric_cols):
-    sns.histplot(df[column].dropna(), bins=35, kde=df[column].nunique() > 5, ax=ax)
+    values = df[column].dropna()
+    if column == "SalaryUSD":
+        values = values[values > 0]
+        log_bins = np.logspace(np.log10(values.min()), np.log10(values.max()), 35)
+        sns.histplot(values, bins=log_bins, ax=ax)
+        ax.set_xscale("log")
+        ax.set_xlabel("SalaryUSD (skala log)")
+    elif column in ["YearsWithThisDatabase", "YearsWithThisTypeOfJob"]:
+        values = values[values.between(0, 60)]
+        sns.histplot(values, bins=30, kde=True, ax=ax)
+        ax.set_xlim(0, 60)
+    else:
+        sns.histplot(values, bins=35, kde=values.nunique() > 5, ax=ax)
     ax.set_title(column)
 for ax in np.ravel(axes)[len(numeric_cols):]:
     ax.remove()
 fig.suptitle("Rozkłady wszystkich zmiennych liczbowych", y=1.01, fontsize=15)
 finish_plot(
     "eda_02_all_numeric_distributions.png",
-    "Rozkłady są silnie zróżnicowane: wynagrodzenie jest prawostronnie skośne, zmienne stażowe "
-    "mają długie ogony, `MonthsUnemployed` jest niemal całkowicie puste, a `Counter` jest stałą. "
-    "Wskazuje to na transformację logarytmiczną celu, czyszczenie stażu oraz usunięcie `Counter`."
+    "SalaryUSD pokazano w skali logarytmicznej, a staż wyłącznie w wiarygodnym zakresie 0–60 lat, "
+    "dzięki czemu główna masa obserwacji pozostaje czytelna. `Counter` pominięto jako stałą, "
+    "natomiast anomalie są raportowane osobno."
 )
 '''),
     md('''## `SalaryUSD` w skali zwykłej i logarytmicznej'''),
@@ -846,7 +858,9 @@ display(Markdown(
 test_pred = best_classifier.predict(X_test)
 report = pd.DataFrame(classification_report(y_test, test_pred, output_dict=True, zero_division=0)).T
 display(report.round(3))
-report.to_csv(PROJECT_ROOT / "reports" / "classification_per_class_metrics.csv")
+report.reset_index(names="class").to_csv(
+    PROJECT_ROOT / "reports" / "classification_per_class_metrics.csv", index=False
+)
 
 labels = sorted(y.unique())
 cm = confusion_matrix(y_test, test_pred, labels=labels, normalize="true")
@@ -891,10 +905,14 @@ display(Markdown(
     md('''
     ## Ograniczenia klasyfikacji
 
+    **Wniosek praktyczny.** Model pozwala na eksploracyjne rozróżnianie planów zawodowych, lecz jego
+    jakość jest zbyt niska do indywidualnych decyzji kadrowych lub automatycznej klasyfikacji produkcyjnej.
+
     - `Not Asked` usunięto jako artefakt wersji ankiety; wyniki dotyczą lat, w których pytanie zadawano;
     - klasy pozostają niezbalansowane, dlatego accuracy nie jest metryką główną;
     - odpowiedzi deklaratywne nie muszą odpowiadać późniejszym zachowaniom;
-    - preprocessing i tuning korzystają wyłącznie z train/CV; test pozostaje końcową oceną;
+    - raportowane 5-fold CV po tuningu jest **non-nested CV** i może być lekko optymistyczne;
+    - tuning i CV korzystają wyłącznie z train; niezależny test pozostaje końcową oceną;
     - permutation importance opisuje predykcję, nie zależność przyczynową.
     ''')
 ]
@@ -1098,6 +1116,9 @@ display(Markdown(f"**Interpretacja.** {dbscan_conclusion} DBSCAN nie jest przeds
 '''),
     md('''
     ## Ograniczenia klasteryzacji
+
+    **Wniosek praktyczny.** K-Means daje słabą, ale opisywalną segmentację; DBSCAN nie potwierdził
+    obecności stabilnych klastrów. Wyniki mają charakter badawczy, a nie operacyjny.
 
     - wyniki zależą od kodowania, skalowania oraz liczby komponentów SVD;
     - silhouette mierzy separację geometryczną, nie użyteczność biznesową;
