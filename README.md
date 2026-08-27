@@ -25,6 +25,14 @@ The project is structured to maintain clean code separation, scalability, and re
 * **`scripts/`**: Reproducible notebook and PDF-report builders.
 * **`tests/`**: Unit tests for domain cleaning and the multi-label encoder.
 
+## Submission Note
+
+The notebooks are versioned as reproducible source notebooks and may be stored without
+executed output cells. The complete generated results are included under `reports/`,
+especially in `reports/project_report.pdf`, with supporting CSV tables and figures in
+`reports/figures/`. When submitting the project, provide the repository together with
+the generated PDF report.
+
 ## Setup & Execution
 
 The raw workbook is intentionally not stored in Git. Place it at:
@@ -60,4 +68,4 @@ python scripts/build_report.py
 - Classification and clustering are exploratory: their low Macro F1/balanced accuracy
   and silhouette scores do not support automated HR decisions or operational segments.
 - The generated PDF uses compact multi-panel figure sheets and stays within the required
-  10–20 page range (currently 14 pages).
+  10-20 page range (currently 14 pages).
