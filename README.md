@@ -54,3 +54,10 @@ python scripts/build_report.py
 - `Survey Year` is retained and regression includes a temporal holdout evaluation.
 - `CareerPlansThisYear = Not Asked` is excluded from the main classification because the question was not asked in 2017.
 - Salaries are nominal USD and are not adjusted for inflation or purchasing power.
+- Hyperparameter tuning uses 3-fold CV and the selected configuration is reported with
+  5-fold non-nested CV on the same training partition; the untouched test split remains
+  the final independent estimate.
+- Classification and clustering are exploratory: their low Macro F1/balanced accuracy
+  and silhouette scores do not support automated HR decisions or operational segments.
+- The generated PDF uses compact multi-panel figure sheets and stays within the required
+  10–20 page range (currently 14 pages).

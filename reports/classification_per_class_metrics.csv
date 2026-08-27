@@ -1,4 +1,4 @@
-,precision,recall,f1-score,support
+class,precision,recall,f1-score,support
 Change both employers and roles,0.10900473933649289,0.12568306010928962,0.116751269035533,183.0
 Prefer not to say,0.12295081967213115,0.15384615384615385,0.1366742596810934,195.0
 "Stay with the same employer,  but change roles",0.15915915915915915,0.2054263565891473,0.1793570219966159,258.0
